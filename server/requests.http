@@ -1,0 +1,304 @@
+### Variables
+@baseUrl = http://localhost:5000/api/v1
+@adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZDhmNmU3MmJhYzM5MDI1ZmI2ODk5YiIsImlhdCI6MTc5MjYwMzg4MCwiZXhwIjoxNzk1MTk1ODgwfQ.XBITn6P9VdLRSsLtDKBsD8vI7PhRmYOrckIhcF6CtwI
+@receptionToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZDhmNzA0MmJhYzM5MDI1ZmI2ODk5YyIsImlhdCI6MTc5MjYwMzkwOCwiZXhwIjoxNzk1MTk1OTA4fQ.tKVBMaULoif0sUEkAtGOjSwJICFweG2QudIGrvz_9fk
+@doctorToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZDhmNzIzMmJhYzM5MDI1ZmI2ODk5ZCIsImlhdCI6MTc5MjYwMzkzOSwiZXhwIjoxNzk1MTk1OTM5fQ.altpxPP6bjkv6Xh27Wow9IRtByVhKQflBwlRgl_3ZAE
+@nurseToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZDhmNzQ4MmJhYzM5MDI1ZmI2ODk5ZSIsImlhdCI6MTc5MjYwMzk3NiwiZXhwIjoxNzk1MTk1OTc2fQ.ftB4ZEV0BVetc1gFcNDjfj90l4AAXL-ZuWQL8QExALg
+@labToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZDhmNzY1MmJhYzM5MDI1ZmI2ODk5ZiIsImlhdCI6MTc5MjYwNDAwNSwiZXhwIjoxNzk1MTk2MDA1fQ.z2aHC4xPictBDJJE7hBqJTzk96PmywdxJpq60kVUzjs
+
+@patientId = 6ad900bc866029033c39417b
+@visitId = 6ad902b5866029033c39417c
+@labRequestId = YOUR_LAB_REQUEST_ID_HERE
+
+### 1. Register Admin User
+POST http://localhost:5000/api/v1/auth/register
+Content-Type: application/json
+
+{
+  "fullName": "System Admin",
+  "username": "admin.fawes@clinic.com",
+  "password": "12345678",
+  "phone": "555-0100",
+  "role": "ADMIN"
+}
+
+### 2. Register Reception User
+POST http://localhost:5000/api/v1/auth/register
+Content-Type: application/json
+
+{
+  "fullName": "Receptionist Desk",
+  "username": "reception.fawes@clinic.com",
+  "password": "12345678",
+  "phone": "555-0101",
+  "role": "RECEPTION"
+}
+
+### 3. Register Doctor User
+POST http://localhost:5000/api/v1/auth/register
+Content-Type: application/json
+
+{
+  "fullName": "Dr. Smith",
+  "username": "doctor.fawes@clinic.com",
+  "password": "12345678",
+  "phone": "555-0102",
+  "role": "DOCTOR"
+}
+
+### 4. Register Nurse User
+POST http://localhost:5000/api/v1/auth/register
+Content-Type: application/json
+
+{
+  "fullName": "Nurse Joy",
+  "username": "nurse.fawes@clinic.com",
+  "password": "12345678",
+  "phone": "555-0103",
+  "role": "NURSE"
+}
+
+### 5. Register Lab Technician User
+POST http://localhost:5000/api/v1/auth/register
+Content-Type: application/json
+
+{
+  "fullName": "Lab Tech",
+  "username": "lab.fawes@clinic.com",
+  "password": "12345678",
+  "phone": "555-0104",
+  "role": "LAB"
+}
+
+### 2. Create Visit with Fresh Patient ID
+POST http://localhost:5000/api/v1/visits
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZDhmNzA0MmJhYzM5MDI1ZmI2ODk5YyIsImlhdCI6MTc5MjYwMzkwOCwiZXhwIjoxNzk1MTk1OTA4fQ.tKVBMaULoif0sUEkAtGOjSwJICFweG2QudIGrvz_9fk
+Content-Type: application/json
+
+{
+  "patientId": "6ad900bc866029033c39417b",
+  "visitType": "CONSULTATION"
+}
+### Add Prescription / Clinical Notes (Doctor Role)
+POST http://localhost:5000/api/v1/visits/6ad902b5866029033c39417c/prescription
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZDhmNzIzMmJhYzM5MDI1ZmI2ODk5ZCIsImlhdCI6MTc5MjYwMzkzOSwiZXhwIjoxNzk1MTk1OTM5fQ.altpxPP6bjkv6Xh27Wow9IRtByVhKQflBwlRgl_3ZAE
+Content-Type: application/json
+
+{
+  "medication": "Paracetamol",
+  "dosage": "500mg",
+  "frequency": "Twice a day",
+  "duration": "5 days"
+}
+### Record Consultation Only
+PATCH http://localhost:5000/api/v1/visits/6ad902b5866029033c39417c/consultation
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZDhmNzIzMmJhYzM5MDI1ZmI2ODk5ZCIsImlhdCI6MTc5MjYwMzkzOSwiZXhwIjoxNzk1MTk1OTM5fQ.altpxPP6bjkv6Xh27Wow9IRtByVhKQflBwlRgl_3ZAE
+Content-Type: application/json
+
+{
+  "diagnosis": "Acute Bronchitis",
+  "clinicalNotes": "Patient reports severe chest cough and fever for 3 days."
+}
+### Add Prescription Separately
+POST http://localhost:5000/api/v1/visits/6ad902b5866029033c39417c/prescription
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZDhmNzIzMmJhYzM5MDI1ZmI2ODk5ZCIsImlhdCI6MTc5MjYwMzkzOSwiZXhwIjoxNzk1MTk1OTM5fQ.altpxPP6bjkv6Xh27Wow9IRtByVhKQflBwlRgl_3ZAE
+Content-Type: application/json
+
+{
+  "prescription": [
+    {
+      "medicationName": "Amoxicillin",
+      "dosage": "500mg",
+      "quantity": "21 capsules",
+      "frequency": "Three times a day",
+      "duration": "7 days"
+    },
+    {
+      "medicationName": "Paracetamol",
+      "dosage": "500mg",
+      "quantity": "10 tablets",
+      "frequency": "As needed",
+      "duration": "5 days"
+    }
+  ]
+}
+### Update Visit Payment Status (Reception Role)
+PATCH http://localhost:5000/api/v1/visits/6ad902b5866029033c39417c/pay
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZDhmNzA0MmJhYzM5MDI1ZmI2ODk5YyIsImlhdCI6MTc5MjYwMzkwOCwiZXhwIjoxNzk1MTk1OTA4fQ.tKVBMaULoif0sUEkAtGOjSwJICFweG2QudIGrvz_9fk
+Content-Type: application/json
+
+{
+  "treatmentFeePaid": true
+}
+### Dispense Stock Item (Nurse Role)
+PATCH http://localhost:5000/api/v1/stock/6ad76666a400d27aa1a61360/dispense
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZDhmNzQ4MmJhYzM5MDI1ZmI2ODk5ZSIsImlhdCI6MTc5MjYwMzk3NiwiZXhwIjoxNzk1MTk1OTc2fQ.ftB4ZEV0BVetc1gFcNDjfj90l4AAXL-ZuWQL8QExALg
+Content-Type: application/json
+
+{
+  "quantityUsed": 5
+}
+### Get All Stock Items
+GET http://localhost:5000/api/v1/stock
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZDhmNzIzMmJhYzM5MDI1ZmI2ODk5ZCIsImlhdCI6MTc5MjYwMzkzOSwiZXhwIjoxNzk1MTk1OTM5fQ.altpxPP6bjkv6Xh27Wow9IRtByVhKQflBwlRgl_3ZAE
+### Get All Lab Tests (Doctor / Staff Role)
+GET http://localhost:5000/api/v1/lab-tests
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZDhmNzIzMmJhYzM5MDI1ZmI2ODk5ZCIsImlhdCI6MTc5MjYwMzkzOSwiZXhwIjoxNzk1MTk1OTM5fQ.altpxPP6bjkv6Xh27Wow9IRtByVhKQflBwlRgl_3ZAE
+### Order Lab Test from Catalog (Doctor Role)
+POST http://localhost:5000/api/v1/visits/6ad902b5866029033c39417c/lab-requests
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZDhmNzIzMmJhYzM5MDI1ZmI2ODk5ZCIsImlhdCI6MTc5MjYwMzkzOSwiZXhwIjoxNzk1MTk1OTM5fQ.altpxPP6bjkv6Xh27Wow9IRtByVhKQflBwlRgl_3ZAE
+Content-Type: application/json
+
+{
+  "labTestId": "6ad9311d55a79cafde57e8f9"
+}
+### Record Specimen Collection (Lab Tech Role)
+PATCH http://localhost:5000/api/v1/visits/6ad902b5866029033c39417c/lab-requests/6ad9d84ca55c1861c1c9be77/specimen
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZDhmNzY1MmJhYzM5MDI1ZmI2ODk5ZiIsImlhdCI6MTc5MjYwNDAwNSwiZXhwIjoxNzk1MTk2MDA1fQ.z2aHC4xPictBDJJE7hBqJTzk96PmywdxJpq60kVUzjs
+Content-Type: application/json
+
+{
+  "specimenStatus": "COLLECTED",
+  "specimenType": "Venous Blood",
+  "specimenIdentifier": "SPEC-2026-001"
+}
+### Get All Visits to Find Lab Request ID
+GET http://localhost:5000/api/v1/visits
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZDhmNzY1MmJhYzM5MDI1ZmI2ODk5ZiIsImlhdCI6MTc5MjYwNDAwNSwiZXhwIjoxNzk1MTk2MDA1fQ.z2aHC4xPictBDJJE7hBqJTzk96PmywdxJpq60kVUzjs
+### Record / Update Lab Test Result (Lab Tech / Admin Role)
+PATCH http://localhost:5000/api/v1/visits/6ad902b5866029033c39417c/lab-requests/6ad9d84ca55c1861c1c9be77
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZDhmNzY1MmJhYzM5MDI1ZmI2ODk5ZiIsImlhdCI6MTc5MjYwNDAwNSwiZXhwIjoxNzk1MTk2MDA1fQ.z2aHC4xPictBDJJE7hBqJTzk96PmywdxJpq60kVUzjs
+Content-Type: application/json
+
+{
+  "result": "14.2",
+  "unit": "g/dL",
+  "referenceRange": "12.0 - 16.0",
+  "isAbnormal": false,
+  "isCritical": false,
+  "notes": "Specimen analyzed successfully. Normal parameters observed.",
+  "status": "PENDING_VERIFICATION"
+}
+### Verify and Finalize Lab Test Result (LAB / ADMIN Role)
+PATCH http://localhost:5000/api/v1/visits/6ad902b5866029033c39417c/lab-requests/6ad9d84ca55c1861c1c9be77
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZDhmNzY1MmJhYzM5MDI1ZmI2ODk5ZiIsImlhdCI6MTc5MjYwNDAwNSwiZXhwIjoxNzk1MTk2MDA1fQ.z2aHC4xPictBDJJE7hBqJTzk96PmywdxJpq60kVUzjs
+Content-Type: application/json
+
+{
+  "status": "VERIFIED",
+  "isDraft": false
+}
+### Record Doctor Consultation & Diagnosis (Doctor / Admin Role)
+PATCH http://localhost:5000/api/v1/visits/6ad902b5866029033c39417c/consultation
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZDhmNzIzMmJhYzM5MDI1ZmI2ODk5ZCIsImlhdCI6MTc5MjYwMzkzOSwiZXhwIjoxNzk1MTk1OTM5fQ.altpxPP6bjkv6Xh27Wow9IRtByVhKQflBwlRgl_3ZAE
+Content-Type: application/json
+
+{
+  "diagnosis": "Acute Bronchitis with secondary upper respiratory infection",
+  "notes": "Patient presents with persistent cough and fatigue. Lab hemoglobin levels are normal (14.2 g/dL), ruling out anemia. Proceeding with antibiotic treatment.",
+  "prescription": [
+    {
+      "medicationName": "Amoxicillin",
+      "dosage": "500mg",
+      "quantity": "21",
+      "frequency": "TID (Three times daily)",
+      "duration": "7 days"
+    }
+  ],
+  "status": "COMPLETED"
+}
+### Test Doctor Prescription with Pathway Type (Doctor / Admin Role)
+POST http://localhost:5000/api/v1/visits/6ad902b5866029033c39417c/prescription
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZDhmNzIzMmJhYzM5MDI1ZmI2ODk5ZCIsImlhdCI6MTc5MjYwMzkzOSwiZXhwIjoxNzk1MTk1OTM5fQ.altpxPP6bjkv6Xh27Wow9IRtByVhKQflBwlRgl_3ZAE
+Content-Type: application/json
+
+{
+  "prescription": [
+    {
+      "medicationName": "Amoxicillin",
+      "dosage": "500mg",
+      "quantity": "21",
+      "frequency": "TID",
+      "duration": "7 days",
+      "prescriptionType": "IN_HOUSE"
+    }
+  ]
+}
+### Reception Collects Treatment Fee (RECEPTION / ADMIN Role)
+PATCH http://localhost:5000/api/v1/visits/6ad902b5866029033c39417c/pay
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZDhmNzA0MmJhYzM5MDI1ZmI2ODk5YyIsImlhdCI6MTc5MjYwMzkwOCwiZXhwIjoxNzk1MTk1OTA4fQ.tKVBMaULoif0sUEkAtGOjSwJICFweG2QudIGrvz_9fk
+Content-Type: application/json
+
+{
+  "paymentStatus": {
+    "registrationPaid": true,
+    "labFeePaid": true,
+    "treatmentFeePaid": true
+  }
+}
+### Nurse Administers In-House Treatment & Deducts Inventory (Nurse / Admin Role)
+PATCH http://localhost:5000/api/v1/visits/6ad902b5866029033c39417c/administer
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZDhmNzQ4MmJhYzM5MDI1ZmI2ODk5ZSIsImlhdCI6MTc5MjYwMzk3NiwiZXhwIjoxNzk1MTk1OTc2fQ.ftB4ZEV0BVetc1gFcNDjfj90l4AAXL-ZuWQL8QExALg
+Content-Type: application/json
+
+{
+  "prescriptionId": "6ada06e264459752edff0011",
+  "notes": "Amoxicillin 500mg administered orally. Patient tolerated well."
+}
+### Get Nurse Treatment Worklist (Nurse / Admin Role)
+GET http://localhost:5000/api/v1/visits/nurse/worklist
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZDhmNzQ4MmJhYzM5MDI1ZmI2ODk5ZSIsImlhdCI6MTc5MjYwMzk3NiwiZXhwIjoxNzk1MTk1OTc2fQ.ftB4ZEV0BVetc1gFcNDjfj90l4AAXL-ZuWQL8QExALg
+### Update Treatment Task Status - Refusal / Escalation / Adverse Event (Nurse / Admin Role)
+PATCH http://localhost:5000/api/v1/visits/6ad902b5866029033c39417c/treatment-status
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZDhmNzQ4MmJhYzM5MDI1ZmI2ODk5ZSIsImlhdCI6MTc5MjYwMzk3NiwiZXhwIjoxNzk1MTk1OTc2fQ.ftB4ZEV0BVetc1gFcNDjfj90l4AAXL-ZuWQL8QExALg
+Content-Type: application/json
+
+{
+  "prescriptionId": "6ada06e264459752edff0011",
+  "status": "REFUSED",
+  "notes": "Patient declined medication due to reported past allergic reaction."
+}
+### Record Follow-Up Care & Treatment Schedule (Nurse / Admin Role)
+PATCH http://localhost:5000/api/v1/visits/6ad902b5866029033c39417c/follow-up
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZDhmNzQ4MmJhYzM5MDI1ZmI2ODk5ZSIsImlhdCI6MTc5MjYwMzk3NiwiZXhwIjoxNzk1MTk1OTc2fQ.ftB4ZEV0BVetc1gFcNDjfj90l4AAXL-ZuWQL8QExALg
+Content-Type: application/json
+
+{
+  "attendanceStatus": "ATTENDED",
+  "scheduledDate": "2026-10-25T09:00:00.000Z",
+  "vitalsRecorded": {
+    "temperature": "36.8°C",
+    "bloodPressure": "120/80",
+    "heartRate": "72 bpm"
+  },
+  "treatmentProvided": "Wound dressing changed. Patient stable.",
+  "clinicalObservations": "Healing progressing well with no signs of infection.",
+  "nextPlannedAction": "Final review with doctor in 3 days."
+}
+### Nurse Records Day 1 Treatment Session (Multi-day course)
+PATCH http://localhost:5000/api/v1/visits/6ad902b5866029033c39417c/treatment-status
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZDhmNzQ4MmJhYzM5MDI1ZmI2ODk5ZSIsImlhdCI6MTc5MjYwMzk3NiwiZXhwIjoxNzk1MTk1OTc2fQ.ftB4ZEV0BVetc1gFcNDjfj90l4AAXL-ZuWQL8QExALg
+Content-Type: application/json
+
+{
+  "prescriptionId": "6ada23b82b6c04b72edcd917",
+  "status": "ADMINISTERED",
+  "quantityToDeduct": 1,
+  "notes": "Day 1 injection administered successfully. Patient vitals stable."
+}
+### Get Consolidated Bill Summary for a Visit (Cashier / Reception / Admin)
+GET http://localhost:5000/api/v1/visits/6ad902b5866029033c39417c/bill-summary
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZDhmNzA0MmJhYzM5MDI1ZmI2ODk5YyIsImlhdCI6MTc5MjYwMzkwOCwiZXhwIjoxNzk1MTk1OTA4fQ.tKVBMaULoif0sUEkAtGOjSwJICFweG2QudIGrvz_9fk
+
+### Process Final Visit Checkout & Generate Settlement Receipt (Cashier / Reception / Admin)
+PATCH http://localhost:5000/api/v1/visits/6ad902b5866029033c39417c/checkout
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZDhmNzA0MmJhYzM5MDI1ZmI2ODk5YyIsImlhdCI6MTc5MjYwMzkwOCwiZXhwIjoxNzk1MTk1OTA4fQ.tKVBMaULoif0sUEkAtGOjSwJICFweG2QudIGrvz_9fk
+Content-Type: application/json
+
+{
+  "paymentMethod": "CASH",
+  "amountPaid": 150.00
+}
+### Get Longitudinal Patient EMR Clinical History (Doctor / Nurse / Admin)
+GET http://localhost:5000/api/v1/patients/6ad900bc866029033c39417b/emr-history
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZDhmNzIzMmJhYzM5MDI1ZmI2ODk5ZCIsImlhdCI6MTc5MjYwMzkzOSwiZXhwIjoxNzk1MTk1OTM5fQ.altpxPP6bjkv6Xh27Wow9IRtByVhKQflBwlRgl_3ZAE
