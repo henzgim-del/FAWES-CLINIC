@@ -18,6 +18,7 @@ const visitSchema = new mongoose.Schema({
     type: String,
     enum: [
       'REGISTERED',
+      'PENDING_TRIAGE',
       'WAITING_DOCTOR',
       'IN_CONSULTATION',
       'WAITING_LAB',

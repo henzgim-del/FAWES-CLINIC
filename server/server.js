@@ -22,11 +22,13 @@ const patientRoutes = require('./routes/patientRoutes');
 const visitRoutes = require('./routes/visitRoutes');
 const labTestRoutes = require('./routes/labTestRoutes');
 const stockRoutes = require('./routes/stockRoutes');
+const documentRoutes = require('./routes/documentRoutes');
 
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/patients', patientRoutes);
 app.use('/api/v1/visits', visitRoutes);
 app.use('/api/v1/lab-tests', labTestRoutes);
+app.use('/api/v1/documents', documentRoutes);
 app.use('/api/v1/stock', stockRoutes);
 
 // 6. Base Health Check Route

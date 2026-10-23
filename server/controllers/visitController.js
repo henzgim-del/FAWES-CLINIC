@@ -2,6 +2,7 @@ const Visit = require('../models/Visit');
 const Patient = require('../models/Patient');
 const LabTest = require('../models/LabTest');
 const Stock = require('../models/Stock');
+const Document = require('../models/Document');
 
 // @desc    Initiate a new visit (Receptionist)
 // @route   POST /api/v1/visits
@@ -16,11 +17,24 @@ exports.createVisit = async (req, res) => {
     }
 
     const visit = await Visit.create({
-      patient: patientId,
-      receptionist: req.user.id,
-      assignedDoctor: assignedDoctor || null,
-      status: 'PENDING_TRIAGE'
-    });
+  patient: patientId,
+  receptionist: req.user.id,
+  assignedDoctor: assignedDoctor || null,
+  status: 'PENDING_TRIAGE'
+});
+
+// Auto-generate the linked INVOICE document
+// Auto-generate the linked INVOICE document
+await Document.create({
+  visit: visit._id,
+  patient: patientId,
+  docType: 'INVOICE',
+  invoiceDetails: {
+    paymentStatus: 'PENDING',
+    items: []
+  }
+});
+    
 
     const populatedVisit = await Visit.findById(visit._id)
       .populate('patient')

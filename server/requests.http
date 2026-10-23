@@ -302,3 +302,127 @@ Content-Type: application/json
 ### Get Longitudinal Patient EMR Clinical History (Doctor / Nurse / Admin)
 GET http://localhost:5000/api/v1/patients/6ad900bc866029033c39417b/emr-history
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZDhmNzIzMmJhYzM5MDI1ZmI2ODk5ZCIsImlhdCI6MTc5MjYwMzkzOSwiZXhwIjoxNzk1MTk1OTM5fQ.altpxPP6bjkv6Xh27Wow9IRtByVhKQflBwlRgl_3ZAE
+### 1. Doctor Issues a Sick Leave (Auto-captures first check-in day from visit)
+POST http://localhost:5000/api/v1/documents/visits/6ad8c537ce84fb613ca73f67/documents
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZDhmNzIzMmJhYzM5MDI1ZmI2ODk5ZCIsImlhdCI6MTc5MjYwMzkzOSwiZXhwIjoxNzk1MTk1OTM5fQ.altpxPP6bjkv6Xh27Wow9IRtByVhKQflBwlRgl_3ZAE
+
+{
+  "docType": "SICK_LEAVE",
+  "organizationName": "Ministry of Health",
+  "sickLeaveDetails": {
+    "reasonForExamination": "Acute viral respiratory infection with fever and fatigue.",
+    "startDate": "2026-10-23T00:00:00.000Z",
+    "endDate": "2026-10-26T00:00:00.000Z",
+    "numberOfDays": 3,
+    "remarks": "Patient advised complete bed rest and hydration."
+  }
+}
+
+### 2. Get All Documents for a Visit
+GET http://localhost:5000/api/v1/documents/visits/6ad8c537ce84fb613ca73f67/documents
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZDhmNzA0MmJhYzM5MDI1ZmI2ODk5YyIsImlhdCI6MTc5MjYwMzkwOCwiZXhwIjoxNzk1MTk1OTA4fQ.tKVBMaULoif0sUEkAtGOjSwJICFweG2QudIGrvz_9fk
+
+
+### 3. Mark Invoice as PAID (Reception / Cashier action)
+PATCH http://localhost:5000/api/v1/documents/items/6adbc23bc28a199ad31d1ed9/pay
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZDhmNzA0MmJhYzM5MDI1ZmI2ODk5YyIsImlhdCI6MTc5MjYwMzkwOCwiZXhwIjoxNzk1MTk1OTA4fQ.tKVBMaULoif0sUEkAtGOjSwJICFweG2QudIGrvz_9fk
+
+
+### 4. Print Visit Documents (Blocked if invoice is pending, unlocked if paid)
+PATCH http://localhost:5000/api/v1/documents/visits/6adbc23bc28a199ad31d1ed9/print-queue
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZDhmNzA0MmJhYzM5MDI1ZmI2ODk5YyIsImlhdCI6MTc5MjYwMzkwOCwiZXhwIjoxNzk1MTk1OTA4fQ.tKVBMaULoif0sUEkAtGOjSwJICFweG2QudIGrvz_9fk
+### 5. Get All Documents for a Visit (After Print Queue)
+GET http://localhost:5000/api/v1/documents/visits/6ad8c537ce84fb613ca73f67/documents
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZDhmNzA0MmJhYzM5MDI1ZmI2ODk5YyIsImlhdCI6MTc5MjYwMzkwOCwiZXhwIjoxNzk1MTk1OTA4fQ.tKVBMaULoif0sUEkAtGOjSwJICFweG2QudIGrvz_9fk
+### 1. Initiate New Visit
+POST http://localhost:5000/api/v1/visits
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZDhmNzA0MmJhYzM5MDI1ZmI2ODk5YyIsImlhdCI6MTc5MjYwMzkwOCwiZXhwIjoxNzk1MTk1OTA4fQ.tKVBMaULoif0sUEkAtGOjSwJICFweG2QudIGrvz_9fk
+
+{
+  "patientId": "6ad77453dc1c5965c03569e4",
+  "assignedDoctor": "6ad8f7232bac39025fb6899d"
+}
+### 2. Get All Documents for the New Visit
+GET http://localhost:5000/api/v1/documents/visits/6adbdcbccd0fad6885dc594b/documents
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZDhmNzA0MmJhYzM5MDI1ZmI2ODk5YyIsImlhdCI6MTc5MjYwMzkwOCwiZXhwIjoxNzk1MTk1OTA4fQ.tKVBMaULoif0sUEkAtGOjSwJICFweG2QudIGrvz_9fk
+### 3. Mark Invoice as PAID
+PATCH http://localhost:5000/api/v1/documents/items/6adbdcbccd0fad6885dc594c/pay
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZDhmNzA0MmJhYzM5MDI1ZmI2ODk5YyIsImlhdCI6MTc5MjYwMzkwOCwiZXhwIjoxNzk1MTk1OTA4fQ.tKVBMaULoif0sUEkAtGOjSwJICFweG2QudIGrvz_9fk
+### 4. Process Print Queue for Visit
+PATCH http://localhost:5000/api/v1/documents/visits/6adbdcbccd0fad6885dc594b/print-queue
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZDhmNzA0MmJhYzM5MDI1ZmI2ODk5YyIsImlhdCI6MTc5MjYwMzkwOCwiZXhwIjoxNzk1MTk1OTA4fQ.tKVBMaULoif0sUEkAtGOjSwJICFweG2QudIGrvz_9fk
+### 1. Create Mastectomy Surgical Leave Document
+POST http://localhost:5000/api/v1/documents/visits/6adbdcbccd0fad6885dc594b/documents
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZDhmNzIzMmJhYzM5MDI1ZmI2ODk5ZCIsImlhdCI6MTc5MjYwMzkzOSwiZXhwIjoxNzk1MTk1OTM5fQ.altpxPP6bjkv6Xh27Wow9IRtByVhKQflBwlRgl_3ZAE
+
+{
+  "docType": "SICK_LEAVE",
+  "organizationName": "FAWES Central Clinic",
+  "sickLeaveDetails": {
+    "firstCheckInDate": "2026-10-24T00:00:00.000Z",
+    "startDate": "2026-10-24T00:00:00.000Z",
+    "endDate": "2026-11-07T00:00:00.000Z",
+    "numberOfDays": 14,
+    "reasonForExamination": "Post-operative recovery following modified radical mastectomy",
+    "remarks": "Strict rest advised. Post-surgical wound care and drain monitoring required."
+  }
+}
+### 2. Create Full Referral Document
+POST http://localhost:5000/api/v1/documents/visits/6adbdcbccd0fad6885dc594b/documents
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZDhmNzIzMmJhYzM5MDI1ZmI2ODk5ZCIsImlhdCI6MTc5MjYwMzkzOSwiZXhwIjoxNzk1MTk1OTM5fQ.altpxPP6bjkv6Xh27Wow9IRtByVhKQflBwlRgl_3ZAE
+
+{
+  "docType": "FULL_REFERRAL",
+  "organizationName": "National Oncology & Surgical Center",
+  "fullReferralDetails": {
+    "clinicalFindings": "Patient evaluated post-mastectomy with stable vital signs.",
+    "labResultsSummary": "Complete blood count within normal limits. Histopathology pending.",
+    "currentCondition": "Post-surgical recovery. Wound clean and dry.",
+    "reasonForReferral": "Specialist consultation and follow-up oncology management."
+  }
+}
+### 3. Create Outsourced Lab Document
+POST http://localhost:5000/api/v1/documents/visits/6adbdcbccd0fad6885dc594b/documents
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZDhmNzIzMmJhYzM5MDI1ZmI2ODk5ZCIsImlhdCI6MTc5MjYwMzkzOSwiZXhwIjoxNzk1MTk1OTM5fQ.altpxPP6bjkv6Xh27Wow9IRtByVhKQflBwlRgl_3ZAE
+
+{
+  "docType": "OUTSOURCED_TEST",
+  "organizationName": "City Reference Diagnostic Lab",
+  "outsourcedTestDetails": {
+    "requiredTests": [
+      "Histopathology / Biopsy Analysis",
+      "ER / PR / HER2 Neu Receptor Status"
+    ],
+    "clinicalIndication": "Urgent tissue processing and receptor profiling post-mastectomy"
+  }
+}
+### 4. Create Outsourced Prescription Document
+POST http://localhost:5000/api/v1/documents/visits/6adbdcbccd0fad6885dc594b/documents
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZDhmNzIzMmJhYzM5MDI1ZmI2ODk5ZCIsImlhdCI6MTc5MjYwMzkzOSwiZXhwIjoxNzk1MTk1OTM5fQ.altpxPP6bjkv6Xh27Wow9IRtByVhKQflBwlRgl_3ZAE
+
+{
+  "docType": "OUTSOURCED_PRESCRIPTION",
+  "organizationName": "FAWES Central Pharmacy",
+  "outsourcedPrescriptionDetails": {
+    "medications": [
+      {
+        "drugName": "Tamoxifen 20mg",
+        "dosage": "1 tablet daily",
+        "duration": "30 days",
+        "instructions": "Take orally with or without food."
+      }
+    ]
+  }
+}
+### Get All Documents for the Visit
+GET http://localhost:5000/api/v1/documents/visits/6adbdcbccd0fad6885dc594b/documents
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZDhmNzA0MmJhYzM5MDI1ZmI2ODk5YyIsImlhdCI6MTc5MjYwMzkwOCwiZXhwIjoxNzk1MTk1OTA4fQ.tKVBMaULoif0sUEkAtGOjSwJICFweG2QudIGrvz_9fk
+### Process Print Queue (Batch Print All Unprinted Documents)
+PATCH http://localhost:5000/api/v1/documents/visits/6adbdcbccd0fad6885dc594b/print-queue
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZDhmNzA0MmJhYzM5MDI1ZmI2ODk5YyIsImlhdCI6MTc5MjYwMzkwOCwiZXhwIjoxNzk1MTk1OTA4fQ.tKVBMaULoif0sUEkAtGOjSwJICFweG2QudIGrvz_9fk
