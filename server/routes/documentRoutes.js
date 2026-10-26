@@ -5,11 +5,14 @@ const {
   getVisitDocuments,
   createClinicalDocument,
   markInvoicePaid,
-  printVisitDocuments
+  printVisitDocuments,
+  getDocumentById, // <-- Add this here
 } = require('../controllers/documentController');
 const { protect, authorize } = require('../middleware/auth');
 
 router.use(protect);
+router.route('/:id')
+  .get(getDocumentById); // Make sure getDocumentById is imported from your controller
 
 // Notice these paths now start with /:visitId/documents since server.js mounts at /api/v1/visits
 router.route('/visits/:visitId/documents')

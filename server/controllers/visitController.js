@@ -7,6 +7,8 @@ const Document = require('../models/Document');
 // @desc    Initiate a new visit (Receptionist)
 // @route   POST /api/v1/visits
 // @access  Private (RECEPTION, ADMIN)
+// server/controllers/visitController.js
+
 exports.createVisit = async (req, res) => {
   try {
     const { patientId, assignedDoctor } = req.body;
@@ -16,35 +18,59 @@ exports.createVisit = async (req, res) => {
       return res.status(404).json({ status: 'fail', message: 'Patient not found' });
     }
 
-    const visit = await Visit.create({
-  patient: patientId,
-  receptionist: req.user.id,
-  assignedDoctor: assignedDoctor || null,
-  status: 'PENDING_TRIAGE'
-});
+    // Check patient's most recent visit
+    // Check patient's most recent visit
+const lastVisit = await Visit.findOne({ patient: patientId }).sort({ createdAt: -1 });
 
-// Auto-generate the linked INVOICE document
-// Auto-generate the linked INVOICE document
-await Document.create({
-  visit: visit._id,
-  patient: patientId,
-  docType: 'INVOICE',
-  invoiceDetails: {
-    paymentStatus: 'PENDING',
-    items: []
+let isReRegistrationFeeRequired = true;
+if (lastVisit) {
+  const daysSinceLastVisit = (new Date() - new Date(lastVisit.createdAt)) / (1000 * 60 * 60 * 24);
+  
+  // If the last visit is within 15 days, waive the re-registration/slip cost
+  if (daysSinceLastVisit <= 15) {
+    isReRegistrationFeeRequired = false;
   }
-});
-    
+}
 
-    const populatedVisit = await Visit.findById(visit._id)
-      .populate('patient')
-      .populate('receptionist', 'fullName username role')
-      .populate('assignedDoctor', 'fullName username role');
+// Auto-generate invoice based on the 15-day rule
+// Replace lines 36 to 66 in your server/controllers/visitController.js with this:
 
-    res.status(201).json({
-      status: 'success',
-      data: populatedVisit
-    });
+  // Auto-generate invoice based on the 15-day rule
+  const invoiceItems = [];
+  if (isReRegistrationFeeRequired) {
+    invoiceItems.push({ serviceName: 'Re-Registration / Slip Fee', amount: 50 });
+  }
+
+  // 1. Create the visit record
+  const visit = await Visit.create({
+    patient: patientId,
+    department: req.body.department || 'General',
+    chiefComplaint: req.body.chiefComplaint || 'Standard Reception Registration',
+    status: req.body.status || 'PENDING_TRIAGE',
+    paymentStatus: isReRegistrationFeeRequired ? 'PENDING' : 'PAID'
+  });
+
+  // 2. Auto-generate the linked INVOICE document using correct visit._id reference
+  await Document.create({
+    visit: visit._id,
+    patient: patientId,
+    docType: 'INVOICE',
+    invoiceDetails: {
+      paymentStatus: isReRegistrationFeeRequired ? 'PENDING' : 'PAID',
+      items: invoiceItems,
+      totalAmount: isReRegistrationFeeRequired ? 50 : 0
+    }
+  });
+
+  const populatedVisit = await Visit.findById(visit._id)
+    .populate('patient')
+    .populate('receptionist', 'fullName username role')
+    .populate('assignedDoctor', 'fullName username role');
+
+  res.status(201).json({
+    status: 'success',
+    data: populatedVisit
+  });
   } catch (error) {
     console.error(error);
     res.status(500).json({ status: 'error', message: 'Server error creating visit' });
@@ -468,30 +494,37 @@ exports.updateLabResult = async (req, res, next) => {
 // @desc    Update payment status for a visit
 // @route   PATCH /api/v1/visits/:id/pay
 // @access  Private (Reception, Cashier, Admin)
-exports.updatePaymentStatus = async (req, res, next) => {
+// @desc    Update visit payment status and progress visit
+// @route   PATCH /api/v1/visits/:id/pay
+// @access  Private (RECEPTION, ADMIN)
+exports.updatePaymentStatus = async (req, res) => {
   try {
-    const { id } = req.params;
-    const { registrationPaid, labFeePaid, treatmentFeePaid } = req.body;
+    const visit = await Visit.findById(req.params.id);
 
-    const visit = await Visit.findById(id);
     if (!visit) {
-      return res.status(404).json({ status: 'fail', message: 'Visit not found' });
+      return res.status(404).json({ status: 'error', message: 'Visit not found' });
     }
 
-    // Update flags if provided in request body
-    if (registrationPaid !== undefined) visit.paymentStatus.registrationPaid = registrationPaid;
-    if (labFeePaid !== undefined) visit.paymentStatus.labFeePaid = labFeePaid;
-    if (treatmentFeePaid !== undefined) visit.paymentStatus.treatmentFeePaid = treatmentFeePaid;
-
+    // Update visit status to proceed to triage/doctor queue after payment
+    visit.status = req.body.status || 'PENDING_TRIAGE';
     await visit.save();
+
+    // Also update any linked invoice document payment status to PAID
+    await Document.findOneAndUpdate(
+      { visit: visit._id, docType: 'INVOICE' },
+      { 'invoiceDetails.paymentStatus': 'PAID' },
+      { new: true }
+    );
+
+    const updatedVisit = await Visit.findById(visit._id).populate('patient');
 
     res.status(200).json({
       status: 'success',
-      message: 'Payment status updated successfully',
-      data: visit
+      data: updatedVisit
     });
   } catch (error) {
-    next(error);
+    console.error('Update Payment Status Error:', error);
+    res.status(500).json({ status: 'error', message: error.message || 'Server error updating payment status' });
   }
 };
 // @desc    Get Nurse Treatment Worklist (Eligible in-house tasks)

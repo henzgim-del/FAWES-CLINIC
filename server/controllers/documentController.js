@@ -121,9 +121,36 @@ const printVisitDocuments = async (req, res) => {
   }
 };
 
+// 1. Define the function first
+const getDocumentById = async (req, res) => {
+  try {
+    const document = await Document.findById(req.params.id);
+    if (!document) {
+      return res.status(404).json({ success: false, error: 'Document not found' });
+    }
+    res.status(200).json({ success: true, data: document });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+};
+
+// 2. Then export it inside module.exports
 module.exports = {
   getVisitDocuments,
   createClinicalDocument,
   markInvoicePaid,
-  printVisitDocuments
+  printVisitDocuments,
+  getDocumentById,
+};
+// Add or verify this function in documentController.js
+exports.getDocumentById = async (req, res) => {
+  try {
+    const document = await Document.findById(req.params.id);
+    if (!document) {
+      return res.status(404).json({ success: false, error: 'Document not found' });
+    }
+    res.status(200).json({ success: true, data: document });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
 };

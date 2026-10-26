@@ -14,8 +14,8 @@ exports.registerPatient = async (req, res) => {
       gender,
       phone,
       address,
-      bloodGroup,
-      registeredBy: req.user._id
+      bloodGroup: bloodGroup || 'Unknown',
+      registeredBy: req.user._id // Attached from JWT authentication middleware
     });
 
     res.status(201).json({
@@ -23,8 +23,8 @@ exports.registerPatient = async (req, res) => {
       data: patient
     });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ status: 'error', message: 'Server error registering patient' });
+    console.error('Patient Registration Error:', error);
+    res.status(500).json({ status: 'error', message: error.message || 'Server error registering patient' });
   }
 };
 

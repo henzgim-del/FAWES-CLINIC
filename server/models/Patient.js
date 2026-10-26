@@ -10,11 +10,11 @@ const patientSchema = new mongoose.Schema({
     type: Number,
     required: [true, 'Please add patient age']
   },
-  gender: {
-    type: String,
-    enum: ['Male', 'Female', 'Other'],
-    required: [true, 'Please specify gender']
-  },
+ gender: {
+  type: String,
+  enum: ['Male', 'Female', 'MALE', 'FEMALE', 'male', 'female'],
+  required: [true, 'Please specify gender']
+},
   phone: {
     type: String,
     required: [true, 'Please add a contact phone number'],
